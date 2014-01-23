@@ -29,5 +29,10 @@ namespace Loggly.Tests
       {
          get { return "someUrl"; }
       }
+      public IList<KeyValuePair<string, string>> HttpHeaders
+      {
+          get { return null; }
+      }
+
    }
 }

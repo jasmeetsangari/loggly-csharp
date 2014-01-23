@@ -10,6 +10,11 @@ namespace Loggly
       private const string _domain = ".loggly.com/";
       private readonly string _url;
 
+      public IList<KeyValuePair<string, string>> HttpHeaders
+      {
+          get { return null; }
+      }
+
       public Searcher(string subdomain)
       {
          _url = string.Concat(subdomain, _domain);

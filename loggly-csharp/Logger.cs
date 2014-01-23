@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Loggly.Responses;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace Loggly
 {
@@ -10,6 +11,11 @@ namespace Loggly
    {
       private string _url = "logs.loggly.com/";
       private readonly string _inputKey;
+
+      public const string TAG_HEADER = "X-LOGGLY-TAG";
+
+      private IList<KeyValuePair<string, string>> _httpHeaders;
+
 
       public Logger(string inputKey, string alternativeUrl = null)
       {
@@ -39,6 +45,11 @@ namespace Loggly
          get { return _url; }
       }
 
+      public IList<KeyValuePair<string, string>> HttpHeaders
+      {
+          get { return _httpHeaders; }
+      }
+
       public LogResponse LogSync(string message, bool json)
       {
          var synchronizer = new AutoResetEvent(false);
@@ -61,6 +72,21 @@ namespace Loggly
 
       public void Log(string message, string category, IDictionary<string, object> data)
       {
+          if (data != null)
+          {
+              var tagKey = data.Keys.FirstOrDefault(ky => ky.ToLower() == "tags");
+              if (tagKey != null)
+              {
+                  var tag = data[tagKey];
+                  if (tag != null && !string.IsNullOrEmpty(tag.ToString()))
+                  {
+                      if (_httpHeaders == null)
+                          _httpHeaders = new List<KeyValuePair<string, string>>();
+                      _httpHeaders.Add(new KeyValuePair<string, string>(TAG_HEADER, tag.ToString()));
+                  }
+              }
+          }
+
          var logEntry = new Dictionary<string, object>(data ?? new Dictionary<string, object>())
                         {
                            {"message", message}, {"category", category}

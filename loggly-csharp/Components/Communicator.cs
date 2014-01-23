@@ -86,6 +86,11 @@ namespace Loggly
          request.ReadWriteTimeout = data.Timeout;
          request.UserAgent = "loggly-csharp";
          request.KeepAlive = false;
+         if (_context.HttpHeaders != null)
+         {
+             foreach (var header in _context.HttpHeaders)
+                 request.Headers.Add(header.Key, header.Value);
+         }
          if (withCredentials) { request.Credentials = data.Credentials; }
          if (json) { request.ContentType = "application/json"; }
          return request;

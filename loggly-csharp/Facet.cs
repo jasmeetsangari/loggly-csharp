@@ -1,4 +1,5 @@
 using Loggly.Responses;
+using System.Collections.Generic;
 
 namespace Loggly
 {
@@ -15,6 +16,11 @@ namespace Loggly
       public string Url
       {
          get { return _url; }
+      }
+
+       public IList<KeyValuePair<string, string>> HttpHeaders
+      {
+          get { return null; }
       }
 
       public FacetResponse GetDate(string query)
